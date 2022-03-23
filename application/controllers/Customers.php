@@ -38,7 +38,7 @@ class Customers extends Persons
 			//create object with empty properties.
 			$stats = new stdClass;
 			$stats->total = 0;
-			$stats->balance_due = 0;
+			$stats->balance_due = 0.0;
 			$stats->min = 0;
 			$stats->max = 0;
 			$stats->average = 0;

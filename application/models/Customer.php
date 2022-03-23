@@ -136,6 +136,22 @@ class Customer extends Person
 
 		$stat = $this->db->get()->row();
 
+		// 22-03-23 @rednazkela
+		// Added query to sum total balance due. TODO this must be affected by partial payments to the same sale
+		$this->db->select('
+						SUM(sales_payments.payment_amount) AS balance_due');
+		$this->db->from('sales');
+		$this->db->join('sales_payments AS sales_payments', 'sales.sale_id = sales_payments.sale_id');
+		$this->db->join('sales_items_temp AS sales_items_temp', 'sales.sale_id = sales_items_temp.sale_id');
+		$this->db->where('sales.customer_id', $customer_id);
+		$this->db->where('sales.sale_status', COMPLETED);
+		$this->db->where('sales_payments.payment_type', 'Due');
+		$this->db->group_by('sales.customer_id');
+
+		$due = $this->db->get()->row();
+
+		$stat = (object) array_merge((array)$stat, (array)$due);
+
 		// drop the temporary table to contain memory consumption as it's no longer required
 		$this->db->query('DROP TEMPORARY TABLE IF EXISTS ' . $this->db->dbprefix('sales_items_temp'));
 

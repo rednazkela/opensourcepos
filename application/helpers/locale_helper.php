@@ -5,6 +5,7 @@ const DEFAULT_LANGUAGE_CODE = 'en-US';
 
 define('NOW', time());
 define('MAX_PRECISION', 1e14);
+define('DEFAULT_PRECISION', 2);
 define('DEFAULT_DATE', mktime(0, 0, 0, 1, 1, 2010));
 define('DEFAULT_DATETIME', mktime(0, 0, 0, 1, 1, 2010));
 
@@ -58,7 +59,7 @@ function get_languages()
 		'ar-LB:arabic' => 'Arabic (Lebanon)',
 		'az-AZ:azerbaijani' => 'Azerbaijani (Azerbaijan)',
 		'bg:bulgarian' => 'Bulgarian',
-		'bs:bosnian' => 'Bosnian',
+		'bs-BA:bosnian' => 'Bosnian',
 		'cs:czech' => 'Czech',
 		'da:danish' => 'Danish',
 		'de:german' => 'German (Germany)',
@@ -87,6 +88,7 @@ function get_languages()
 		'ro:romanian' => 'Romanian',
 		'ru:russian' => 'Russian',
 		'sv:swedish' => 'Swedish',
+		'ta:tamil' => 'Tamil',
 		'th:thai' => 'Thai',
 		'tl-PH:talong' => 'Tagalog (Philippines)',
 		'tr:turkish' => 'Turkish',
@@ -247,7 +249,7 @@ function get_payment_options()
 	$config = get_instance()->config;
 	$lang = get_instance()->lang;
 
-	$payments = array();
+	$payments = [];
 
 
 	if($config->item('payment_options_order') == 'debitcreditcash')
@@ -386,7 +388,7 @@ function to_quantity_decimals($number)
 	return to_decimals($number, 'quantity_decimals');
 }
 
-function to_decimals($number, $decimals, $type=\NumberFormatter::DECIMAL)
+function to_decimals($number, $decimals = NULL, $type=\NumberFormatter::DECIMAL)
 {
 	// ignore empty strings and return
 	// NOTE: do not change it to empty otherwise tables will show a 0 with no decimal nor currency symbol
@@ -397,8 +399,9 @@ function to_decimals($number, $decimals, $type=\NumberFormatter::DECIMAL)
 
 	$config = get_instance()->config;
 	$fmt = new \NumberFormatter($config->item('number_locale'), $type);
-	$fmt->setAttribute(\NumberFormatter::MIN_FRACTION_DIGITS, $config->item($decimals));
-	$fmt->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, $config->item($decimals));
+	$fmt->setAttribute(\NumberFormatter::MIN_FRACTION_DIGITS, empty($decimals) ? DEFAULT_PRECISION : $config->item($decimals));
+	$fmt->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, empty($decimals) ? DEFAULT_PRECISION : $config->item($decimals));
+
 	if(empty($config->item('thousands_separator')))
 	{
 		$fmt->setAttribute(\NumberFormatter::GROUPING_SEPARATOR_SYMBOL, '');
@@ -421,7 +424,6 @@ function parse_tax($number)
 function parse_decimals($number, $decimals = NULL)
 {
 	// ignore empty strings and return
-
 	if(empty($number))
 	{
 		return $number;
@@ -439,14 +441,12 @@ function parse_decimals($number, $decimals = NULL)
 
 	$config = get_instance()->config;
 
-	if($decimals == NULL)
+	if($decimals === NULL)
 	{
 		$decimals = $config->item('currency_decimals');
 	}
 
 	$fmt = new \NumberFormatter($config->item('number_locale'), \NumberFormatter::DECIMAL);
-
-	$fmt->setAttribute(\NumberFormatter::FRACTION_DIGITS, $decimals);
 
 	if(empty($config->item('thousands_separator')))
 	{
@@ -599,12 +599,13 @@ function dateformat_bootstrap($php_format)
 
 function valid_date($date)
 {
-	return preg_match('/^([0-9]{2,4})-([0-1][0-9])-([0-3][0-9])(?:( [0-2][0-9]):([0-5][0-9]):([0-5][0-9]))?$/', $date);
+	$config = get_instance()->Appconfig;
+	return (DateTime::createFromFormat($config->get('dateformat'), $date));
 }
 
 function valid_decimal($decimal)
 {
-	return preg_match('/^(\d*\.)?\d+$/', $decimal);
+	return (preg_match('/^(\d*\.)?\d+$/', $decimal) === 1);
 }
 
 ?>

@@ -26,6 +26,14 @@ $hook['post_controller'] = array(
                                     'filepath' => 'hooks'
                                 );
 
+$hook['pre_controller'][] = array(
+    'class'    => '',
+    'function' => 'validate_method',
+    'filename' => 'method_hook.php',
+    'filepath' => 'hooks'
+);
+
+
 $hook['pre_system'] = function() {
     $config_path = APPPATH . (ENVIRONMENT == 'testing') ? 'tests/' : 'config/';
 	try {

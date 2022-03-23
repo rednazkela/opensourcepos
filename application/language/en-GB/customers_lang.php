@@ -2,7 +2,8 @@
 
 $lang["customers_account_number"] = "Account #";
 $lang["customers_account_number_duplicate"] = "Account Number is already present in the database";
-$lang["customers_available_points"] = "Available points";
+$lang["customers_available_points"] = "Points Value";
+$lang["customers_available_points_value"] = "";
 $lang["customers_average"] = "Average spent";
 $lang["customers_avg_discount"] = "Average discount";
 $lang["customers_basic_information"] = "Information";
@@ -33,7 +34,7 @@ $lang["customers_mailchimp_activity_open"] = "Email open";
 $lang["customers_mailchimp_activity_total"] = "Email sent";
 $lang["customers_mailchimp_activity_unopen"] = "Email unopen";
 $lang["customers_mailchimp_email_client"] = "Email client";
-$lang["customers_mailchimp_info"] = "Mailchimp";
+$lang["customers_mailchimp_info"] = "MailChimp";
 $lang["customers_mailchimp_member_rating"] = "Rating";
 $lang["customers_mailchimp_status"] = "Status";
 $lang["customers_mailchimp_vip"] = "VIP";

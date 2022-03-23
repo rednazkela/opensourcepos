@@ -11,7 +11,14 @@ module.exports = function(grunt) {
 		bower_concat: {
 			all: {
 				mainFiles: {
-					'bootstrap-table': [ "dist/bootstrap-table.min.js", "dist/bootstrap-table.css", "dist/extensions/export/bootstrap-table-export.min.js", "dist/extensions/mobile/bootstrap-table-mobile.min.js", "dist/extensions/sticky-header/bootstrap-table-sticky-header.min.js", "dist/extensions/sticky-header/bootstrap-table-sticky-header.css"],
+					'bootstrap-table': [
+						"dist/bootstrap-table.min.js",
+						"dist/bootstrap-table.css",
+						"dist/extensions/export/bootstrap-table-export.min.js",
+						"dist/extensions/mobile/bootstrap-table-mobile.min.js",
+						"dist/extensions/sticky-header/bootstrap-table-sticky-header.min.js",
+						"dist/extensions/sticky-header/bootstrap-table-sticky-header.css"
+					],
 					'chartist-plugin-axistitle': [ "./dist/chartist-plugin-axistitle.min.js"]
 				},
 				dest: {
@@ -51,10 +58,55 @@ module.exports = function(grunt) {
 				}
 			}
 		},
+		copy: {
+			themes: {
+				files: [
+					{
+						expand: true,
+						cwd: 'node_modules/bootstrap/dist/css',
+						src: ['bootstrap.css', 'bootstrap.min.css'],
+						dest: 'public/dist/bootswatch-5/bootstrap/',
+						filter: 'isFile'
+					},
+					{
+						expand: true,
+						cwd: 'node_modules/bootswatch/dist',
+						src: ['**/bootstrap.css', '**/bootstrap.min.css'],
+						dest: 'public/dist/bootswatch-5/',
+						filter: 'isFile'
+					}
+				],
+			},
+			licenses: {
+				files: [{
+					expand: true,
+					src: 'LICENSE',
+					dest: 'public/license/',
+					filter: 'isFile',},
+					{
+						expand: true,
+						cwd: 'node_modules/bootstrap',
+						src: 'LICENSE',
+						dest: 'public/license/',
+						rename: function(dest, src) { return dest + src.replace('LICENSE', 'bootstrap-5.license'); },
+						filter: 'isFile'
+					},
+					{
+						expand: true,
+						cwd: 'node_modules/bootswatch',
+						src: 'LICENSE',
+						dest: 'public/license/',
+						rename: function(dest, src) { return dest + src.replace('LICENSE', 'bootswatch-5.license'); },
+						filter: 'isFile'
+					},
+				],
+			},
+		},
 		cssmin: {
 			target: {
 				files: {
-					'public/dist/<%= pkg.name %>.min.css': ['tmp/opensourcepos_bower.css', 'public/css/*.css', '!public/css/login.css', '!public/css/invoice_email.css', '!public/css/barcode_font.css', '!public/css/darkly.css']
+					'public/dist/opensourcepos.min.css': ['tmp/opensourcepos_bower.css', 'public/css/*.css', '!public/css/login.css', '!public/css/login.min.css', '!public/css/invoice_email.css', '!public/css/barcode_font.css', '!public/css/darkly.css'],
+					'public/css/login.min.css': ['public/css/login.css']
 				}
 			}
 		},
@@ -64,7 +116,7 @@ module.exports = function(grunt) {
 					separator: ';'
 				},
 				files: {
-					'tmp/<%= pkg.name %>.js': ['tmp/opensourcepos_bower.js', 'public/js/jquery*', 'public/js/*.js']
+					'tmp/opensourcepos.js': ['public/dist/jquery/jquery.js', 'tmp/opensourcepos_bower.js', 'public/js/*.js']
 				}
 			},
 			sql: {
@@ -79,11 +131,11 @@ module.exports = function(grunt) {
 		},
 		uglify: {
 			options: {
-				banner: '/*! <%= pkg.name %> <%= grunt.template.today("dd-mm-yyyy") %> */\n'
+				banner: '/*! opensourcepos <%= grunt.template.today("dd-mm-yyyy") %> */\n'
 			},
 			dist: {
 				files: {
-					'public/dist/<%= pkg.name %>.min.js': ['tmp/<%= pkg.name %>.js']
+					'public/dist/opensourcepos.min.js': ['tmp/opensourcepos.js']
 				}
 			}
 		},
@@ -107,7 +159,7 @@ module.exports = function(grunt) {
 					closeTag: '<!-- end css template tags -->',
 					ignorePath: '../../../public/'
 				},
-				src: ['public/css/*.css', '!public/css/login.css', '!public/css/invoice_email.css', '!public/css/barcode_font.css', '!public/css/darkly.css'],
+				src: ['public/css/*.css', '!public/css/login.css', '!public/css/login.min.css', '!public/css/invoice_email.css', '!public/css/barcode_font.css', '!public/css/darkly.css'],
 				dest: 'application/views/partial/header.php',
 			},
 			mincss_header: {
@@ -128,7 +180,7 @@ module.exports = function(grunt) {
 					closeTag: '<!-- end css template tags -->',
 					ignorePath: '../../public/'
 				},
-				src: ['public/css/login.css'],
+				src: 'public/css/login.min.css',
 				dest: 'application/views/login.php'
 			},
 			js: {
@@ -138,7 +190,7 @@ module.exports = function(grunt) {
 					closeTag: '<!-- end js template tags -->',
 					ignorePath: '../../../public/'
 				},
-				src: ['public/js/jquery*', 'public/js/*.js'],
+				src: ['public/dist/bootstrap/js/*.min.js', 'public/js/jquery*', 'public/js/*.js'],
 				dest: 'application/views/partial/header.php'
 			},
 			minjs: {
@@ -150,18 +202,6 @@ module.exports = function(grunt) {
 				},
 				src: ['public/dist/*min.js'],
 				dest: 'application/views/partial/header.php'
-			}
-		},
-		mochaWebdriver: {
-			options: {
-				timeout: 1000 * 60 * 3
-			},
-			test : {
-				options: {
-					usePhantom: true,
-					usePromises: true
-				},
-				src: ['test/**/*.js']
 			}
 		},
 		watch: {
@@ -183,7 +223,10 @@ module.exports = function(grunt) {
 			}
 		},
 		clean: {
-			license: ['public/bower_components/**/bower.json']
+			bower: ["public/bower_components"],
+			composer: ["vendor"],
+			license: ['public/bower_components/**/bower.json'],
+			npm: ["node_modules"]
 		},
 		license: {
 			all: {
@@ -215,20 +258,12 @@ module.exports = function(grunt) {
 				}
 			}
 		},
-		apigen: {
-			generate:{
-				options: {
-					apigenPath: 'vendor/bin/',
-					source: 'application',
-					destination: 'docs'
-				}
-			}
-		},
 		compress: {
 			main: {
 				options: {
-					mode: 'zip',
-					archive: 'dist/opensourcepos.zip'
+					mode: 'tar',
+					archive: 'dist/opensourcepos.tgz',
+					level: 2
 				},
 				files: [
 					{
@@ -240,6 +275,8 @@ module.exports = function(grunt) {
 							'!/public/images/menubar/png/',
 							'!/public/dist/bootswatch/',
 							'/public/dist/bootswatch/*/*.css',
+							'!/public/dist/bootswatch-5/',
+							'/public/dist/bootswatch-5/*/*.css',
 							'database/**',
 							'*.txt',
 							'*.md',
@@ -257,16 +294,13 @@ module.exports = function(grunt) {
 	});
 
 	require('load-grunt-tasks')(grunt);
-	grunt.loadNpmTasks('grunt-mocha-webdriver');
 	grunt.loadNpmTasks('grunt-composer');
-	grunt.loadNpmTasks('grunt-apigen');
 	grunt.loadNpmTasks('grunt-contrib-compress');
 
-	grunt.registerTask('default', ['wiredep', 'bower_concat', 'bowercopy', 'concat', 'uglify', 'cssmin', 'tags', 'cachebreaker']);
+	grunt.registerTask('default', ['wiredep', 'bower_concat', 'bowercopy', 'copy', 'concat', 'uglify', 'cssmin', 'tags', 'cachebreaker']);
 	grunt.registerTask('update', ['composer:update', 'bower:update']);
 	grunt.registerTask('genlicense', ['clean:license', 'license', 'bower-licensechecker']);
 	grunt.registerTask('package', ['default', 'compress']);
 	grunt.registerTask('packages', ['composer:update']);
-	grunt.registerTask('gendocs', ['apigen:generate']);
 
 };

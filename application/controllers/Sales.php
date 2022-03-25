@@ -753,7 +753,15 @@ class Sales extends Secure_Controller
 		else
 		{
 			// Save the data to the sales table
-			$data['sale_status'] = COMPLETED;
+			if(array_key_exists($this->lang->line('sales_due'), $data['payments']))
+			{
+				$data['sale_status'] = DUED;
+			}
+			else
+			{
+				$data['sale_status'] = COMPLETED;
+			}
+
 			if($this->sale_lib->is_return_mode())
 			{
 				$sale_type = SALE_TYPE_RETURN;
@@ -1463,6 +1471,18 @@ class Sales extends Secure_Controller
 		$customer_id = $this->sale_lib->get_customer();
 		$data['suspended_sales'] = $this->xss_clean($this->Sale->get_all_suspended($customer_id));
 		$this->load->view('sales/suspended', $data);
+	}
+
+
+	/**
+	 * List dued sales
+	 */
+	public function dued()
+	{
+		$data = array();
+		$customer_id = $this->sale_lib->get_customer();
+		$data['dued_sales'] = $this->xss_clean($this->Sale->get_all_dued($customer_id));
+		$this->load->view('sales/dued', $data);
 	}
 
 	/**

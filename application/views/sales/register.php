@@ -56,6 +56,13 @@ if(isset($success))
 				?>
 
 				<li class="pull-right">
+					<button class='btn btn-default btn-sm modal-dlg' id='show_due_sales_button' data-href="<?php echo site_url($controller_name."/dued"); ?>"
+							title="<?php echo $this->lang->line('sales_due_sales'); ?>">
+						<span class="glyphicon glyphicon-align-justify">&nbsp</span><?php echo $this->lang->line('sales_due_sales'); ?>
+					</button>
+				</li>
+
+				<li class="pull-right">
 					<button class='btn btn-default btn-sm modal-dlg' id='show_suspended_sales_button' data-href="<?php echo site_url($controller_name."/suspended"); ?>"
 							title="<?php echo $this->lang->line('sales_suspended_sales'); ?>">
 						<span class="glyphicon glyphicon-align-justify">&nbsp</span><?php echo $this->lang->line('sales_suspended_sales'); ?>

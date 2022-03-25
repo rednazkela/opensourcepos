@@ -83,7 +83,7 @@ class Sale extends CI_Model
 	public function search($search, $filters, $rows = 0, $limit_from = 0, $sort = 'sales.sale_time', $order = 'desc', $count_only = FALSE)
 	{
 		// Pick up only non-suspended records
-		$where = 'sales.sale_status = 0 AND ';
+		$where = 'sales.sale_status IN (0,3) AND ';
 
 		if(empty($this->config->item('date_or_time_format')))
 		{
@@ -307,7 +307,7 @@ class Sale extends CI_Model
 
 		if($filters['sale_type'] == 'sales')
 		{
-			$this->db->where('sales.sale_status = ' . COMPLETED . ' AND payment_amount > 0');
+			$this->db->where('sales.sale_status in (' . COMPLETED . ','. DUED .') AND payment_amount > 0');
 		}
 		elseif($filters['sale_type'] == 'quotes')
 		{
@@ -315,11 +315,11 @@ class Sale extends CI_Model
 		}
 		elseif($filters['sale_type'] == 'returns')
 		{
-			$this->db->where('sales.sale_status = ' . COMPLETED . ' AND payment_amount < 0');
+			$this->db->where('sales.sale_status in (' . COMPLETED . ','. DUED .') AND payment_amount < 0');
 		}
 		elseif($filters['sale_type'] == 'all')
 		{
-			$this->db->where('sales.sale_status = ' . COMPLETED);
+			$this->db->where('sales.sale_status in (' . COMPLETED. ','. DUED .')');
 		}
 
 		if($filters['only_invoices'] != FALSE)
@@ -598,7 +598,6 @@ class Sale extends CI_Model
 			'quote_number'		=> $quote_number,
 			'work_order_number'	=> $work_order_number,
 			'dinner_table_id'	=> $dinner_table,
-			'sale_status'		=> $sale_status,
 			'sale_type'			=> $sale_type
 		);
 
@@ -1237,6 +1236,17 @@ class Sale extends CI_Model
 			$query = $this->db->query("SELECT sale_id, case when sale_type = '".SALE_TYPE_QUOTE."' THEN quote_number WHEN sale_type = '".SALE_TYPE_WORK_ORDER."' THEN work_order_number else sale_id end as doc_id, sale_status, sale_time, dinner_table_id, customer_id, employee_id, comment FROM "
 				. $this->db->dbprefix('sales') . ' where sale_status = '. SUSPENDED .' AND customer_id = ' . $customer_id);
 		}
+
+		return $query->result_array();
+	}
+
+	/**
+	 * Retrieves all sales that are in a dued state
+	 */
+	public function get_all_dued($customer_id = NULL)
+	{
+		$query = $this->db->query("SELECT sale_id, case when sale_type = '".SALE_TYPE_QUOTE."' THEN quote_number WHEN sale_type = '".SALE_TYPE_WORK_ORDER."' THEN work_order_number else sale_id end as doc_id, sale_status, sale_time, dinner_table_id, customer_id, employee_id, comment FROM "
+			. $this->db->dbprefix('sales') . ' where sale_status = '. DUED);
 
 		return $query->result_array();
 	}

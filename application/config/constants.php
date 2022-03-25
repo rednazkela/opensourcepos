@@ -135,6 +135,7 @@ define('NAME_SEPARATOR', ' | ');
 define('COMPLETED', 0);
 define('SUSPENDED', 1);
 define('CANCELED', 2);
+define('DUED', 3);
 
 
 define('SALE_TYPE_POS', 0);

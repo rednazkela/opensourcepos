@@ -557,7 +557,7 @@ if(isset($success))
 							{
 							?>
 								<tr>
-									<td><span data-payment-id="<?php echo $payment_id; ?>" class="delete_payment_button"><span class="glyphicon glyphicon-trash"></span></span></td>
+									<td><span data-payment-id="<?php echo $payment_id; ?>" <?php if(substr($payment['payment_type'], 0, 10) == date('Y-m-d')) echo 'class="delete_payment_button"'?>><?php if(substr($payment['payment_type'], 0, 10) == date('Y-m-d')) echo '<span class="glyphicon glyphicon-trash"></span>'?></span></td>
 									<td><?php echo $payment['payment_type']; ?></td>
 									<td style="text-align: right;"><?php echo to_currency($payment['payment_amount']); ?></td>
 								</tr>

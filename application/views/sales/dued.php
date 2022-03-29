@@ -74,9 +74,9 @@
             </td>
             <td><?php echo $dued_sale['comment']; ?></td>
             <td>
-                <?php echo form_open('sales/unsuspend'); ?>
-                <?php echo form_hidden('suspended_sale_id', $dued_sale['sale_id']); ?>
-                <input type="submit" name="submit" value="<?php echo $this->lang->line('sales_unsuspend'); ?>" id="submit" class="btn btn-primary btn-xs pull-right">
+                <?php echo form_open('sales/addpayment'); ?>
+                <?php echo form_hidden('dued_sale_id', $dued_sale['sale_id']); ?>
+                <input type="submit" name="submit" value="<?php echo $this->lang->line('sales_add_payment'); ?>" id="submit" class="btn btn-primary btn-xs pull-right">
                 <?php echo form_close(); ?>
             </td>
         </tr>

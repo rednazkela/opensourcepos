@@ -1107,6 +1107,59 @@ class Sale_lib
 		$this->CI->session->set_userdata('sale_id', $sale_id);
 	}
 
+	public function copy_dued_sale($sale_id)
+	{
+		$this->empty_cart();
+		$this->remove_customer();
+
+		foreach($this->CI->Sale->get_sale_items_ordered($sale_id)->result() as $row)
+		{
+			$this->add_item($row->item_id, $row->quantity_purchased, $row->item_location, $row->discount, $row->discount_type, PRICE_MODE_STANDARD, NULL, NULL, $row->item_unit_price, $row->description, $row->serialnumber, $sale_id, TRUE, $row->print_option);
+		}
+
+		$this->CI->session->set_userdata('cash_mode', CASH_MODE_FALSE);
+
+		// Establish cash_mode for this sale by inspecting the payments
+		if($this->CI->session->userdata('cash_rounding'))
+		{
+			$cash_types_only = true;
+			foreach($this->CI->Sale->get_sale_payments($sale_id)->result() as $row)
+			{
+				if($row->payment_type != $this->CI->lang->line('sales_cash') && $row->payment_type != $this->CI->lang->line('sales_cash_adjustment'))
+				{
+					$cash_types_only = FALSE;
+				}
+
+			}
+			if($cash_types_only)
+			{
+				$this->CI->session->set_userdata('cash_mode', CASH_MODE_TRUE);
+			}
+			else
+			{
+				$this->CI->session->set_userdata('cash_mode', CASH_MODE_FALSE);
+			}
+		}
+
+		// Now load payments
+		foreach($this->CI->Sale->get_sale_payments($sale_id)->result() as $row)
+		{
+			if(!strpos($row->payment_type, $this->CI->lang->line('sales_due')))
+			{
+				$this->add_payment($row->payment_type, $row->payment_amount, $row->cash_adjustment);
+			}
+		}
+
+		$this->set_customer($this->CI->Sale->get_customer($sale_id)->person_id);
+		$this->set_employee($this->CI->Sale->get_employee($sale_id)->person_id);
+		$this->set_quote_number($this->CI->Sale->get_quote_number($sale_id));
+		$this->set_work_order_number($this->CI->Sale->get_work_order_number($sale_id));
+		$this->set_sale_type($this->CI->Sale->get_sale_type($sale_id));
+		$this->set_comment($this->CI->Sale->get_comment($sale_id));
+		$this->set_dinner_table($this->CI->Sale->get_dinner_table($sale_id));
+		$this->CI->session->set_userdata('sale_id', $sale_id);
+	}
+
 	public function get_sale_id()
 	{
 		return $this->CI->session->userdata('sale_id');

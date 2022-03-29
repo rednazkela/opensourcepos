@@ -692,7 +692,10 @@ $(document).ready(function()
 
 	$(".delete_payment_button").click(function() {
 		const item_id = $(this).data('payment-id');
-		$.post("<?php echo site_url('sales/delete_payment/'); ?>" + item_id, redirect);
+        if(confirm("<?php echo $this->lang->line('sales_confirm_delete_payment'); ?>"))
+        {
+            $.post("<?php echo site_url('sales/delete_payment/'); ?>" + item_id, redirect);
+        }
 	});
 
 	$("input[name='item_number']").change(function() {

@@ -258,7 +258,7 @@ class Sales extends Secure_Controller
 	{
 		$data = array();
 
-		$payment_type = $this->input->post('payment_type');
+		$payment_type = date('Y-m-d') . " " . $this->input->post('payment_type');
 		if($payment_type !== $this->lang->line('sales_giftcard'))
 		{
 			$this->form_validation->set_rules('amount_tendered', 'lang:sales_amount_tendered', 'trim|required|callback_numeric');
@@ -364,7 +364,6 @@ class Sales extends Secure_Controller
 				$this->sale_lib->add_payment($payment_type, $amount_tendered);
 			}
 		}
-
 		$this->_reload($data);
 	}
 
@@ -753,13 +752,14 @@ class Sales extends Secure_Controller
 		else
 		{
 			// Save the data to the sales table
-			if(array_key_exists($this->lang->line('sales_due'), $data['payments']))
-			{
-				$data['sale_status'] = DUED;
-			}
-			else
-			{
-				$data['sale_status'] = COMPLETED;
+			foreach(array_keys($data['payments']) as $array_key) {
+				if (strpos($array_key, $this->lang->line('sales_due'))) {
+					$data['sale_status'] = DUED;
+					break;
+				}
+				else {
+					$data['sale_status'] = COMPLETED;
+				}
 			}
 
 			if($this->sale_lib->is_return_mode())
@@ -1444,7 +1444,11 @@ class Sales extends Secure_Controller
 			$sale_type = SALE_TYPE_POS;
 		}
 		$comment = $this->sale_lib->get_comment();
-		$sale_status = SUSPENDED;
+
+		//Not change DUED status to SUSPENDED
+		$sale_status = $this->Sale->get_sale_status($sale_id) != DUED ? SUSPENDED : DUED;
+		var_dump($this->Sale->get_sale_status($sale_id));
+		var_dump($sale_status);
 
 		$data = array();
 		$sales_taxes = array(array(), array());
@@ -1505,6 +1509,25 @@ class Sales extends Secure_Controller
 		$this->_reload();
 	}
 	
+	/**
+	 * Add payment to sales that are left with due balance
+	 */
+	public function addpayment()
+	{
+		$sale_id = $this->input->post('dued_sale_id');
+		$this->sale_lib->clear_all();
+
+		if($sale_id > 0)
+		{
+			$this->sale_lib->copy_dued_sale($sale_id);
+		}
+
+		// Set current register mode to reflect that of unsuspended order type
+		$this->change_register_mode($this->sale_lib->get_sale_type());
+
+		$this->_reload();
+	}
+
 	public function sales_keyboard_help()
 	{
 		$this->load->view('sales/help');

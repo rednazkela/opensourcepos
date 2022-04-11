@@ -578,7 +578,7 @@ class Sale extends CI_Model
 	{
 		if($sale_id != -1)
 		{
-			$this->clear_suspended_sale_detail($sale_id);
+			$this->clear_suspended_sale_detail($sale_id,$payments);
 		}
 
 		$tax_decimals = tax_decimals();
@@ -640,6 +640,10 @@ class Sale extends CI_Model
 				'cash_adjustment' => $payment['cash_adjustment'],
 				'employee_id'	  => $employee_id
 			);
+
+			if($payment['payment_time'] != '-1') {
+				$sales_payments_data['payment_time'] = $payment['payment_time'];
+			}
 
 			$this->db->insert('sales_payments', $sales_payments_data);
 
@@ -704,7 +708,8 @@ class Sale extends CI_Model
 				$this->Inventory->insert($inv_data);
 			}
 
-			$this->Attribute->copy_attribute_links($item['item_id'], 'sale_id', $sale_id);
+			if($sale_status != 3)
+				$this->Attribute->copy_attribute_links($item['item_id'], 'sale_id', $sale_id);
 		}
 
 		if($customer_id == -1 || $customer->taxable)
@@ -1387,7 +1392,7 @@ class Sale extends CI_Model
 	 * This clears the sales detail for a given sale_id before the detail is resaved.
 	 * This allows us to reuse the same sale_id
 	 */
-	public function clear_suspended_sale_detail($sale_id)
+	public function clear_suspended_sale_detail($sale_id, &$payments)
 	{
 		$this->db->trans_start();
 
@@ -1396,6 +1401,17 @@ class Sale extends CI_Model
 		{
 			$dinner_table = $this->get_dinner_table($sale_id);
 			$this->Dinner_table->release($dinner_table);
+		}
+
+		foreach ($payments as 	$payment_id => $payment) {
+			$this->db->select('payment_time');
+			$this->db->from('ospos_sales_payments');
+			$this->db->where('payment_id', $payment['payment_id']);
+			$query = $this->db->get();
+			if($query->num_rows() == 1)
+			{
+				$payments[$payment_id]['payment_time'] = $query->row()['payment_time'];
+			}
 		}
 
 		$this->db->delete('sales_payments', array('sale_id' => $sale_id));

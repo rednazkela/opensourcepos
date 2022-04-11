@@ -94,12 +94,34 @@ if(isset($success))
 					<label for="item" class='control-label'><?php echo $this->lang->line('sales_find_or_scan_item_or_receipt'); ?></label>
 				</li>
 				<li class="pull-left">
-					<?php echo form_input(array('name'=>'item', 'id'=>'item', 'class'=>'form-control input-sm', 'size'=>'50', 'tabindex'=>++$tabindex)); ?>
+					<?php
+                        $due_payment = FALSE;
+                        $previous_payments = FALSE;
+                        if(count($payments) > 0)
+                        {
+                            foreach($payments as $payment_id => $payment)
+                            {
+                                if(strpos($payment['payment_type'], $this->lang->line('sales_due')))
+                                {
+                                    $due_payment = TRUE;
+                                }
+                                if(new DateTime($payment['payment_time']) < new DateTime())
+                                {
+                                    $previous_payments = TRUE;
+                                }
+                            }
+                        }
+                        $item_input = array('name'=>'item', 'id'=>'item', 'class'=>'form-control input-sm', 'size'=>'50', 'tabindex'=>++$tabindex);
+                        if($previous_payments) {
+                            $item_input = array_merge($item_input, array('readonly' => 'readonly'));
+                        }
+                        echo form_input($item_input);
+                    ?>
 					<span class="ui-helper-hidden-accessible" role="status"></span>
 				</li>
 				<li class="pull-right">
 					<button id='new_item_button' class='btn btn-info btn-sm pull-right modal-dlg' data-btn-new="<?php echo $this->lang->line('common_new') ?>" data-btn-submit="<?php echo $this->lang->line('common_submit')?>" data-href="<?php echo site_url("items/view"); ?>"
-							title="<?php echo $this->lang->line($controller_name . '_new_item'); ?>">
+							title="<?php echo $this->lang->line($controller_name . '_new_item'); ?>" <?php if($previous_payments) echo 'disabled';?>>
 						<span class="glyphicon glyphicon-tag">&nbsp</span><?php echo $this->lang->line($controller_name. '_new_item'); ?>
 					</button>
 				</li>
@@ -144,7 +166,7 @@ if(isset($success))
 					<?php echo form_open($controller_name."/edit_item/$line", array('class'=>'form-horizontal', 'id'=>'cart_'.$line)); ?>
 						<tr>
 							<td>
-								<span data-item-id="<?php echo $line; ?>" class="delete_item_button"><span class="glyphicon glyphicon-trash"></span></span>
+								<span data-item-id="<?php echo $line; ?>" <?php if(!$previous_payments) echo 'class="delete_payment_button"'?>><?php if(!$previous_payments) echo '<span class="glyphicon glyphicon-trash"></span>'?></span></td>
 								<?php
 								echo form_hidden('location', $item['item_location']);
 								echo form_input(array('type'=>'hidden', 'name'=>'item_id', 'value'=>$item['item_id']));
@@ -390,7 +412,8 @@ if(isset($success))
 					?>
 				</table>
 
-				<button class="btn btn-danger btn-sm" id="remove_customer_button" title="<?php echo $this->lang->line('common_remove').' '.$this->lang->line('customers_customer')?>">
+
+				<button class="btn btn-danger btn-sm" id="remove_customer_button" title="<?php echo $this->lang->line('common_remove').' '.$this->lang->line('customers_customer');?> " <?php if($previous_payments) echo 'disabled';?>>
 					<span class="glyphicon glyphicon-remove">&nbsp</span><?php echo $this->lang->line('common_remove').' '.$this->lang->line('customers_customer') ?>
 				</button>
 
@@ -488,19 +511,6 @@ if(isset($success))
 					// Only show this part if in sale or return mode
 					if($pos_mode)
 					{
-						$due_payment = FALSE;
-
-						if(count($payments) > 0)
-						{
-							foreach($payments as $payment_id => $payment)
-							{
-								if($payment['payment_type'] == $this->lang->line('sales_due'))
-								{
-									$due_payment = TRUE;
-								}
-							}
-						}
-
 						if(!$due_payment || ($due_payment && isset($customer)))
 						{
 					?>
@@ -687,7 +697,9 @@ $(document).ready(function()
 	$(".delete_item_button").click(function()
 	{
 		const item_id = $(this).data('item-id');
-		$.post("<?php echo site_url('sales/delete_item/'); ?>" + item_id, redirect);
+        if(confirm("<?php echo $this->lang->line('sales_confirm_delete_item'); ?>")) {
+            $.post("<?php echo site_url('sales/delete_item/'); ?>" + item_id, redirect);
+        }
 	});
 
 	$(".delete_payment_button").click(function() {

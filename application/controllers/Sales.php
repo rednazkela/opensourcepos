@@ -309,7 +309,7 @@ class Sales extends Secure_Controller
 					$data['warning'] = $this->lang->line('giftcards_remaining_balance', $giftcard_num, $new_giftcard_value);
 					$amount_tendered = min($this->sale_lib->get_amount_due(), $this->Giftcard->get_giftcard_value($giftcard_num));
 
-					$this->sale_lib->add_payment($payment_type, $amount_tendered);
+					$this->sale_lib->add_payment($payment_type, $amount_tendered, -1);
 				}
 			}
 			elseif($payment_type === $this->lang->line('sales_rewards'))
@@ -340,7 +340,7 @@ class Sales extends Secure_Controller
 						$data['warning'] = $this->lang->line('rewards_remaining_balance'). $new_reward_value;
 						$amount_tendered = min($this->sale_lib->get_amount_due(), $points);
 
-						$this->sale_lib->add_payment($payment_type, $amount_tendered);
+						$this->sale_lib->add_payment($payment_type, $amount_tendered, -1);
 					}
 				}
 			}
@@ -350,18 +350,18 @@ class Sales extends Secure_Controller
 				$sales_total = $this->sale_lib->get_total(FALSE);
 
 				$amount_tendered = $this->input->post('amount_tendered');
-				$this->sale_lib->add_payment($payment_type, $amount_tendered);
+				$this->sale_lib->add_payment($payment_type, $amount_tendered, -1);
 				$cash_adjustment_amount = $amount_due - $sales_total;
 				if($cash_adjustment_amount <> 0)
 				{
 					$this->session->set_userdata('cash_mode', CASH_MODE_TRUE);
-					$this->sale_lib->add_payment($this->lang->line('sales_cash_adjustment'), $cash_adjustment_amount, CASH_ADJUSTMENT_TRUE);
+					$this->sale_lib->add_payment($this->lang->line('sales_cash_adjustment'), -1, $cash_adjustment_amount, CASH_ADJUSTMENT_TRUE);
 				}
 			}
 			else
 			{
 				$amount_tendered = $this->input->post('amount_tendered');
-				$this->sale_lib->add_payment($payment_type, $amount_tendered);
+				$this->sale_lib->add_payment($payment_type, $amount_tendered, -1);
 			}
 		}
 		$this->_reload($data);
@@ -1447,8 +1447,6 @@ class Sales extends Secure_Controller
 
 		//Not change DUED status to SUSPENDED
 		$sale_status = $this->Sale->get_sale_status($sale_id) != DUED ? SUSPENDED : DUED;
-		var_dump($this->Sale->get_sale_status($sale_id));
-		var_dump($sale_status);
 
 		$data = array();
 		$sales_taxes = array(array(), array());

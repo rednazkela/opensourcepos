@@ -374,7 +374,7 @@ class Sale_lib
 	 * @param $payment_amount
 	 * @param int $cash_adjustment
 	 */
-	public function add_payment($payment_id, $payment_amount, $cash_adjustment = CASH_ADJUSTMENT_FALSE)
+	public function add_payment($payment_id, $payment_amount, $payment_time, $cash_adjustment = CASH_ADJUSTMENT_FALSE)
 	{
 		$payments = $this->get_payments();
 		if(isset($payments[$payment_id]))
@@ -386,7 +386,7 @@ class Sale_lib
 		{
 			//add to existing array
 			$payment = array($payment_id => array('payment_type' => $payment_id, 'payment_amount' => $payment_amount,
-				'cash_refund' => 0, 'cash_adjustment' => $cash_adjustment));
+				'cash_refund' => 0, 'cash_adjustment' => $cash_adjustment, 'payment_time' => $payment_time));
 
 			$payments += $payment;
 		}
@@ -1094,7 +1094,7 @@ class Sale_lib
 		// Now load payments
 		foreach($this->CI->Sale->get_sale_payments($sale_id)->result() as $row)
 		{
-			$this->add_payment($row->payment_type, $row->payment_amount, $row->cash_adjustment);
+			$this->add_payment($row->payment_type, $row->payment_amount, $row->payment_id, $row->cash_adjustment);
 		}
 
 		$this->set_customer($this->CI->Sale->get_customer($sale_id)->person_id);
@@ -1146,7 +1146,7 @@ class Sale_lib
 		{
 			if(!strpos($row->payment_type, $this->CI->lang->line('sales_due')))
 			{
-				$this->add_payment($row->payment_type, $row->payment_amount, $row->cash_adjustment);
+				$this->add_payment($row->payment_type, $row->payment_amount, $row->payment_time, $row->cash_adjustment);
 			}
 		}
 

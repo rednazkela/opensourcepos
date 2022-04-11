@@ -220,3 +220,6 @@ $lang["sales_work_order_number"] = "Numero Orden Trabajo";
 $lang["sales_work_order_number_duplicate"] = "El numero de orden de trabajo debe ser unico.";
 $lang["sales_work_order_sent"] = "Orden de trabajo enviada a";
 $lang["sales_work_order_unsent"] = "Orden de trabajo fallida al enviar a";
+$lang["sales_due_sales"] = "Adeudados";
+$lang["sales_add_payment"] = "Añadir pago";
+$lang["sales_confirm_delete_payment"] = "¿Estás seguro de eliminar el pago? Esta acción no se puede deshacer.";

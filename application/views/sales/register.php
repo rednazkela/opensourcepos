@@ -55,12 +55,19 @@ if(isset($success))
 				}
 				?>
 
+                <?php
+                if(count($modes) > 1)
+                {
+                ?>
 				<li class="pull-right">
 					<button class='btn btn-default btn-sm modal-dlg' id='show_due_sales_button' data-href="<?php echo site_url($controller_name."/dued"); ?>"
 							title="<?php echo $this->lang->line('sales_due_sales'); ?>">
 						<span class="glyphicon glyphicon-align-justify">&nbsp</span><?php echo $this->lang->line('sales_due_sales'); ?>
 					</button>
 				</li>
+                <?php
+                }
+                ?>
 
 				<li class="pull-right">
 					<button class='btn btn-default btn-sm modal-dlg' id='show_suspended_sales_button' data-href="<?php echo site_url($controller_name."/suspended"); ?>"
@@ -70,7 +77,7 @@ if(isset($success))
 				</li>
 
 				<?php
-				if($this->Employee->has_grant('reports_sales', $this->session->userdata('person_id')))
+				if($this->Employee->has_grant('reports_sales', $this->session->userdata('person_id')) && count($modes) > 1)
 				{
 				?>
 					<li class="pull-right">
@@ -119,12 +126,19 @@ if(isset($success))
                     ?>
 					<span class="ui-helper-hidden-accessible" role="status"></span>
 				</li>
+                <?php
+                if(false)
+                {
+                ?>
 				<li class="pull-right">
 					<button id='new_item_button' class='btn btn-info btn-sm pull-right modal-dlg' data-btn-new="<?php echo $this->lang->line('common_new') ?>" data-btn-submit="<?php echo $this->lang->line('common_submit')?>" data-href="<?php echo site_url("items/view"); ?>"
 							title="<?php echo $this->lang->line($controller_name . '_new_item'); ?>" <?php if($previous_payments) echo 'disabled';?>>
 						<span class="glyphicon glyphicon-tag">&nbsp</span><?php echo $this->lang->line($controller_name. '_new_item'); ?>
 					</button>
 				</li>
+                <?php
+                }
+                ?>
 			</ul>
 		</div>
 	<?php echo form_close(); ?>
@@ -166,7 +180,7 @@ if(isset($success))
 					<?php echo form_open($controller_name."/edit_item/$line", array('class'=>'form-horizontal', 'id'=>'cart_'.$line)); ?>
 						<tr>
 							<td>
-								<span data-item-id="<?php echo $line; ?>" <?php if(!$previous_payments) echo 'class="delete_payment_button"'?>><?php if(!$previous_payments) echo '<span class="glyphicon glyphicon-trash"></span>'?></span></td>
+								<span data-item-id="<?php echo $line; ?>" <?php if(!$previous_payments) echo 'class="delete_item_button"'?>><?php if(!$previous_payments) echo '<span class="glyphicon glyphicon-trash"></span>'?></span></td>
 								<?php
 								echo form_hidden('location', $item['item_location']);
 								echo form_input(array('type'=>'hidden', 'name'=>'item_id', 'value'=>$item['item_id']));
@@ -225,9 +239,9 @@ if(isset($success))
 
 							<td>
 								<div class="input-group">
-									<?php echo form_input(array('name'=>'discount', 'class'=>'form-control input-sm', 'value'=>$item['discount_type'] ? to_currency_no_money($item['discount']) : to_decimals($item['discount']), 'tabindex'=>++$tabindex, 'onClick'=>'this.select();')); ?>
+									<?php echo form_input(array('name'=>'discount', 'class'=>'form-control input-sm', 'value'=>$item['discount_type'] ? to_currency_no_money($item['discount']) : to_decimals($item['discount']), 'tabindex'=>++$tabindex, 'onClick'=>'this.select();', 'disabled'=>'disabled')); ?>
 									<span class="input-group-btn">
-										<?php echo form_checkbox(array('id'=>'discount_toggle', 'name'=>'discount_toggle', 'value'=>1, 'data-toggle'=>"toggle",'data-size'=>'small', 'data-onstyle'=>'success', 'data-on'=>'<b>'.$this->config->item('currency_symbol').'</b>', 'data-off'=>'<b>%</b>', 'data-line'=>$line, 'checked'=>$item['discount_type'])); ?>
+										<?php echo form_checkbox(array('id'=>'discount_toggle', 'name'=>'discount_toggle', 'value'=>1, 'data-toggle'=>"toggle",'data-size'=>'small', 'data-onstyle'=>'success', 'data-on'=>'<b>'.$this->config->item('currency_symbol').'</b>', 'data-off'=>'<b>%</b>', 'data-line'=>$line, 'checked'=>$item['discount_type'], 'disabled' => 'disabled')); ?>
 									</span>
 								</div>
 							</td>

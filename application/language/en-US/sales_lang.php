@@ -224,3 +224,4 @@ $lang["sales_due_sales"] = "Dued";
 $lang["sales_add_payment"] = "Add payment";
 $lang["sales_confirm_delete_payment"] = "Are you sure you want to delete this payment? This action cannot be undone.";
 $lang["sales_confirm_delete_item"] = "Are you sure you want to delete this item?";
+$lang["sales_location"] = "Location";

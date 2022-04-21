@@ -40,7 +40,9 @@
 				</div>
 
 				<?php $this->load->view("people/form_basic_info"); ?>
-				
+				<?php
+                if(false) { // Ocultarlo
+				?>
 				<div class="form-group form-group-sm">
 					<?php echo form_label($this->lang->line('customers_discount_type'), 'discount_type', array('class'=>'control-label col-xs-3')); ?>
 					<div class="col-xs-8">
@@ -159,7 +161,9 @@
 						<?php echo form_checkbox('taxable', '1', $person_info->taxable == '' ? TRUE : (boolean)$person_info->taxable); ?>
 					</div>
 				</div>
-
+                <?php
+                } //Ocultar
+                ?>
 				<?php
 				if($use_destination_based_tax)
 				{

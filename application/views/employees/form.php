@@ -70,6 +70,35 @@
 				</div>
 
 				<div class="form-group form-group-sm">
+                    <?php echo form_label($this->lang->line('sales_location'), 'language', array('class' => 'control-label col-xs-3')); ?>
+                    <div class="col-xs-9">
+                        <div>
+                            <?php echo form_radio('location', $this->lang->line("sales_register"), 'false', "class='col-xs-1'"); ?>
+                            <span class="medium"><?php echo $this->lang->line("sales_register")?></span>
+                        </div>
+                        <div>
+                            <?php echo form_radio('location', 'Social', 'false', "class='col-xs-1'"); ?>
+                            <span class="medium">Social</span>
+                        </div>
+                        <div>
+                            <?php echo form_radio('location', 'Jurídico', 'false', "class='col-xs-1'"); ?>
+                            <span class="medium">Jurídico</span>
+                        </div>
+                        <div>
+                            <?php echo form_radio('location', 'Administrativo', 'false', "class='col-xs-1'"); ?>
+                            <span class="medium">Administrativo</span>
+                        </div>
+                        <div>
+                            <?php echo form_radio('location', 'Técnico', 'false', "class='col-xs-1'"); ?>
+                            <span class="medium">Técnico</span>
+                        </div>
+                        <div>
+                            <?php echo form_radio('location', 'Dirección', 'false', "class='col-xs-1'"); ?>
+                            <span class="medium">Dirección</span>
+                        </div>
+                    </div>
+                </div>
+				<div class="form-group form-group-sm">
 					<?php echo form_label($this->lang->line('employees_language'), 'language', array('class' => 'control-label col-xs-3')); ?>
 					<div class='col-xs-8'>
 						<div class="input-group">

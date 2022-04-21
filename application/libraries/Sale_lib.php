@@ -44,6 +44,9 @@ class Sale_lib
 			$register_modes['sale_invoice'] = $this->CI->lang->line('sales_invoice');
 		}
 		$register_modes['return'] = $this->CI->lang->line('sales_return');
+
+		if(get_instance()->Employee->get_info($this->CI->session->userdata('person_id'))->location != $this->CI->lang->line('sales_register'))
+			$register_modes = array('sale_quote' => $this->CI->lang->line('sales_quote'));
 		return $register_modes;
 	}
 
@@ -753,6 +756,13 @@ class Sale_lib
 			$item_id = -1;
 			return FALSE;
 		}
+
+		$location = get_instance()->Employee->get_info($this->CI->session->userdata('person_id'))->location;
+		if($location != $this->CI->lang->line('sales_register') && $location != $item_info->category){
+			$item_id = -1;
+			return FALSE;
+		}
+
 
 		$applied_discount = $discount;
 		$item_id = $item_info->item_id;

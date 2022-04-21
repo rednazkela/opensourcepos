@@ -1,0 +1,1 @@
+ALTER TABLE ospos_employees ADD COLUMN location VARCHAR(255) NOT NULL AFTER person_id;

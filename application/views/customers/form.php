@@ -40,6 +40,17 @@
 				</div>
 
 				<?php $this->load->view("people/form_basic_info"); ?>
+                <div class="form-group form-group-sm">
+                    <?php echo form_label($this->lang->line('customers_tax_id'), 'tax_id', array('class' => 'control-label col-xs-3')); ?>
+                    <div class='col-xs-4'>
+                        <?php echo form_input(array(
+                                'name'=>'tax_id',
+                                'id'=>'tax_id',
+                                'class'=>'form-control input-sm',
+                                'value'=>$person_info->tax_id)
+                        ); ?>
+                    </div>
+                </div>
 				<?php
                 if(false) { // Ocultarlo
 				?>
@@ -118,18 +129,6 @@
 								'class'=>'form-control input-sm',
 								'value'=>$person_info->account_number)
 								); ?>
-					</div>
-				</div>
-
-				<div class="form-group form-group-sm">
-					<?php echo form_label($this->lang->line('customers_tax_id'), 'tax_id', array('class' => 'control-label col-xs-3')); ?>
-					<div class='col-xs-4'>
-						<?php echo form_input(array(
-								'name'=>'tax_id',
-								'id'=>'tax_id',
-								'class'=>'form-control input-sm',
-								'value'=>$person_info->tax_id)
-						); ?>
 					</div>
 				</div>
 

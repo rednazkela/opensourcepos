@@ -42,6 +42,7 @@ if(isset($success))
 					</li>
 				<?php
 				}
+                var_dump($mode);
 				if(count($stock_locations) > 1)
 				{
 				?>
@@ -487,6 +488,9 @@ if(isset($success))
 		if(count($cart) > 0)
 		{
 		?>
+            <?php
+            if(count($modes) > 1) {
+            ?>
 			<table class="sales_table_100" id="payment_totals">
 				<tr>
 					<th style="width: 55%;"><?php echo $this->lang->line('sales_payments_total'); ?></th>
@@ -498,7 +502,7 @@ if(isset($success))
 				</tr>
 			</table>
 
-			<div id="payment_details">
+            <div id="payment_details">
 				<?php
 				// Show Complete sale button instead of Add Payment if there is no amount due left
 				if($payments_cover_total)
@@ -594,10 +598,19 @@ if(isset($success))
 				}
 				?>
 			</div>
+            <?php
+            }
+            ?>
 
 			<?php echo form_open($controller_name."/cancel", array('id'=>'buttons_form')); ?>
 				<div class="form-group" id="buttons_sale">
+                    <?php
+                    if(count($modes) > 1) {
+                    ?>
 					<div class='btn btn-sm btn-default pull-left' id='suspend_sale_button'><span class="glyphicon glyphicon-align-justify">&nbsp</span><?php echo $this->lang->line('sales_suspend_sale'); ?></div>
+                    <?php
+                    }
+                    ?>
 					<?php
 					// Only show this part if the payment covers the total
 					if(!$pos_mode && isset($customer))
@@ -703,8 +716,9 @@ $(document).ready(function()
 		window.location.href = "<?php echo site_url('sales'); ?>";
 	};
 
-	$("#remove_customer_button").click(function()
+	$("#remove_customer_button").click(function(e)
 	{
+        e.preventDefault();
 		$.post("<?php echo site_url('sales/remove_customer'); ?>", redirect);
 	});
 

@@ -752,13 +752,11 @@ class Sales extends Secure_Controller
 		else
 		{
 			// Save the data to the sales table
+			$data['sale_status'] = COMPLETED;
 			foreach(array_keys($data['payments']) as $array_key) {
 				if (strpos($array_key, $this->lang->line('sales_due'))) {
 					$data['sale_status'] = DUED;
 					break;
-				}
-				else {
-					$data['sale_status'] = COMPLETED;
 				}
 			}
 
@@ -1052,7 +1050,6 @@ class Sales extends Secure_Controller
 		$customer_info = $this->_load_customer_data($this->sale_lib->get_customer(), $data, TRUE);
 
 		$data['modes'] = $this->sale_lib->get_register_mode_options();
-		$data['mode'] = $this->sale_lib->get_mode();
 		$data['selected_table'] = $this->sale_lib->get_dinner_table();
 		$data['empty_tables'] = $this->sale_lib->get_empty_tables($data['selected_table']);
 		$data['stock_locations'] = $this->Stock_location->get_allowed_locations('sales');
@@ -1152,8 +1149,18 @@ class Sales extends Secure_Controller
 		}
 		else
 		{
-			$data['mode_label'] = $this->lang->line('sales_receipt');
-			$data['customer_required'] = $this->lang->line('sales_customer_optional');
+			if(count($data['modes']) > 1) {
+				$data['mode_label'] = $this->lang->line('sales_receipt');
+				$data['customer_required'] = $this->lang->line('sales_customer_optional');
+			}
+			else
+			{
+				$this->sale_lib->set_mode('sale_quote');
+				$this->sale_lib->set_sale_type(SALE_TYPE_QUOTE);
+				$data['mode_label'] = $this->lang->line('sales_quote');
+				$data['mode'] = $this->lang->line('sales_quote');
+			}
+
 		}
 
 		$data = $this->xss_clean($data);

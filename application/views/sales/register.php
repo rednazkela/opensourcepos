@@ -42,7 +42,6 @@ if(isset($success))
 					</li>
 				<?php
 				}
-                var_dump($mode);
 				if(count($stock_locations) > 1)
 				{
 				?>

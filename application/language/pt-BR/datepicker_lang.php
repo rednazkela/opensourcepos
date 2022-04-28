@@ -3,7 +3,7 @@
 $lang["datepicker_all_time"] = "Todos";
 $lang["datepicker_apply"] = "Aplicar";
 $lang["datepicker_cancel"] = "Cancelar";
-$lang["datepicker_custom"] = "Cliente";
+$lang["datepicker_custom"] = "Beneficiario";
 $lang["datepicker_from"] = "De";
 $lang["datepicker_last_30"] = "Últimos 30 Dias";
 $lang["datepicker_last_7"] = "Últimos 7 Dias";

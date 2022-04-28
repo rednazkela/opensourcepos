@@ -143,7 +143,6 @@ class Sales extends Secure_Controller
 	{
 		$mode = $this->input->post('mode');
 		$this->sale_lib->set_mode($mode);
-
 		if($mode == 'sale')
 		{
 			$this->sale_lib->set_sale_type(SALE_TYPE_POS);

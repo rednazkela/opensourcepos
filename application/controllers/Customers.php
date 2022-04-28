@@ -270,6 +270,8 @@ class Customers extends Persons
 			'sales_tax_code_id' => $this->input->post('sales_tax_code_id') == '' ? NULL : $this->input->post('sales_tax_code_id')
 		);
 
+		if(!isset($customer_data['tax_id'])) $customer_data['tax_id'] = '';
+
 		if($this->Customer->save_customer($person_data, $customer_data, $customer_id))
 		{
 			// save customer to Mailchimp selected list

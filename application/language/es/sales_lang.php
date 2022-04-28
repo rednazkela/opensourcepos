@@ -223,3 +223,5 @@ $lang["sales_work_order_unsent"] = "Orden de trabajo fallida al enviar a";
 $lang["sales_due_sales"] = "Adeudados";
 $lang["sales_add_payment"] = "Añadir pago";
 $lang["sales_confirm_delete_payment"] = "¿Estás seguro de eliminar el pago? Esta acción no se puede deshacer.";
+$lang["sales_confirm_delete_item"] = "¿Estás seguro de eliminar este artículo?";
+$lang["sales_location"] = "Ubicación";

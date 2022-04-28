@@ -2,6 +2,7 @@
 
 $lang["reports_all"] = "Todo";
 $lang["reports_authority"] = "Autorización";
+$lang["reports_balance_due"] = "Balance de Adeudos";
 $lang["reports_canceled"] = "Cancelado";
 $lang["reports_categories"] = "Categorías";
 $lang["reports_categories_summary_report"] = "Reporte de Resumen de Categorías";

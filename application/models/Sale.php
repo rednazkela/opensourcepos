@@ -637,7 +637,7 @@ class Sale extends CI_Model
 				'payment_type'	  => $payment['payment_type'],
 				'payment_amount'  => $payment['payment_amount'],
 				'cash_refund'     => $payment['cash_refund'],
-				'cash_adjustment' => $payment['cash_adjustment'],
+				'cash_adjustment' => isset($payment['cash_adjustment']) ? $payment['cash_adjustment'] : 0,
 				'employee_id'	  => $employee_id
 			);
 

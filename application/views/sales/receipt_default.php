@@ -218,9 +218,11 @@
                         $only_sale_check |= $payment['payment_type'] == $this->lang->line('sales_check');
                         $splitpayment = explode(':', $payment['payment_type']);
                         $show_giftcard_remainder |= $splitpayment[0] == $this->lang->line('sales_giftcard');
+                        if($payment['payment_amount'] > 0) {
                         ?>
-                        &#8811; <?php echo substr($splitpayment[0], 0, 19) . " " . to_currency( $payment['payment_amount'] * -1); ?><br>
+                            &#8811; <?php echo substr($splitpayment[0], 0, 19) . " " . to_currency( ($sale_due > 0 ? $payment['payment_amount'] : $total) * -1); ?><br>
                         <?php
+                        }
                     }
                     ?>
                             </p>
@@ -263,7 +265,7 @@
                     } else {
                         echo 'Abono: ';
                     }
-                    echo to_currency($current_payments);
+                    echo to_currency(($sale_due > 0 ? $payment['payment_amount'] : $total));
                 ?>
             </td>
         </tr>

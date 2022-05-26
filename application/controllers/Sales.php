@@ -354,7 +354,7 @@ class Sales extends Secure_Controller
 				if($cash_adjustment_amount <> 0)
 				{
 					$this->session->set_userdata('cash_mode', CASH_MODE_TRUE);
-					$this->sale_lib->add_payment($this->lang->line('sales_cash_adjustment'), -1, $cash_adjustment_amount, CASH_ADJUSTMENT_TRUE);
+					$this->sale_lib->add_payment($this->lang->line('sales_cash_adjustment'), $cash_adjustment_amount, -1, CASH_ADJUSTMENT_TRUE);
 				}
 			}
 			else
@@ -475,14 +475,15 @@ class Sales extends Secure_Controller
 
 		$this->form_validation->set_rules('price', 'lang:sales_price', 'required|callback_numeric');
 		$this->form_validation->set_rules('quantity', 'lang:sales_quantity', 'required|callback_numeric');
-		$this->form_validation->set_rules('discount', 'lang:sales_discount', 'required|callback_numeric');
+		//$this->form_validation->set_rules('discount', 'lang:sales_discount', 'required|callback_numeric');
 
 		$description = $this->input->post('description');
 		$serialnumber = $this->input->post('serialnumber');
 		$price = parse_decimals($this->input->post('price'));
 		$quantity = parse_quantity($this->input->post('quantity'));
 		$discount_type = $this->input->post('discount_type');
-		$discount = $discount_type ? parse_quantity($this->input->post('discount')) : parse_decimals($this->input->post('discount'));
+		//$discount = $discount_type ? parse_quantity($this->input->post('discount')) : parse_decimals($this->input->post('discount'));
+		$discount = 0;
 
 		$item_location = $this->input->post('location');
 		$discounted_total = $this->input->post('discounted_total') != '' ? $this->input->post('discounted_total') : NULL;
@@ -1049,6 +1050,7 @@ class Sales extends Secure_Controller
 		$customer_info = $this->_load_customer_data($this->sale_lib->get_customer(), $data, TRUE);
 
 		$data['modes'] = $this->sale_lib->get_register_mode_options();
+		$data['mode'] = $this->sale_lib->get_mode();
 		$data['selected_table'] = $this->sale_lib->get_dinner_table();
 		$data['empty_tables'] = $this->sale_lib->get_empty_tables($data['selected_table']);
 		$data['stock_locations'] = $this->Stock_location->get_allowed_locations('sales');
@@ -1148,20 +1150,16 @@ class Sales extends Secure_Controller
 		}
 		else
 		{
-			if(count($data['modes']) > 1) {
-				$data['mode_label'] = $this->lang->line('sales_receipt');
-				$data['customer_required'] = $this->lang->line('sales_customer_optional');
-			}
-			else
-			{
-				$this->sale_lib->set_mode('sale_quote');
-				$this->sale_lib->set_sale_type(SALE_TYPE_QUOTE);
-				$data['mode_label'] = $this->lang->line('sales_quote');
-				$data['mode'] = $this->lang->line('sales_quote');
-			}
-
+			$data['mode_label'] = $this->lang->line('sales_receipt');
+			$data['customer_required'] = $this->lang->line('sales_customer_optional');
 		}
-
+		
+		if(count($data['modes']) == 1) {
+			$this->sale_lib->set_mode('sale_quote');
+			$this->sale_lib->set_sale_type(SALE_TYPE_QUOTE);
+			$data['mode_label'] = $this->lang->line('sales_quote');
+			$data['mode'] = $this->lang->line('sales_quote');
+		}
 		$data = $this->xss_clean($data);
 
 		$this->load->view("sales/register", $data);

@@ -19,7 +19,7 @@ $config['application_version'] = '3.3.7';
 | 
 | 
 */ 
-$config['commit_sha1'] = 'dev';
+$config['commit_sha1'] = '6028bc';
  
 /* 
 |-------------------------------------------------------------------------- 
@@ -69,6 +69,7 @@ $config['https_on'] = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ||
 $config['base_url'] = $config['https_on'] ? 'https' : 'http';
 $config['base_url'] .= '://' . ((isset($_SERVER['HTTP_HOST'])) ? $_SERVER['HTTP_HOST'] : 'localhost') ;
 $config['base_url'] .= str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']);
+$config['base_url'] = 'https://inmuvi.gob.mx/pos/';
 
 /*
 |--------------------------------------------------------------------------

@@ -44,7 +44,8 @@ class Sale_lib
 			$register_modes['sale_invoice'] = $this->CI->lang->line('sales_invoice');
 		}
 		$register_modes['return'] = $this->CI->lang->line('sales_return');
-
+		//var_dump(get_instance()->Employee->get_info($this->CI->session->userdata('person_id'))->location);
+		//var_dump($this->CI->lang->line('sales_register'));
 		if(get_instance()->Employee->get_info($this->CI->session->userdata('person_id'))->location != $this->CI->lang->line('sales_register'))
 			$register_modes = array('sale_quote' => $this->CI->lang->line('sales_quote'));
 		return $register_modes;

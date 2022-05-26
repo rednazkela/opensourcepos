@@ -112,10 +112,12 @@ if(isset($success))
                                 {
                                     $due_payment = TRUE;
                                 }
+				try{
                                 if(new DateTime($payment['payment_time']) < new DateTime())
                                 {
                                     $previous_payments = TRUE;
                                 }
+				}catch(Exception $e){}
                             }
                         }
                         $item_input = array('name'=>'item', 'id'=>'item', 'class'=>'form-control input-sm', 'size'=>'50', 'tabindex'=>++$tabindex);
@@ -603,13 +605,13 @@ if(isset($success))
 
 			<?php echo form_open($controller_name."/cancel", array('id'=>'buttons_form')); ?>
 				<div class="form-group" id="buttons_sale">
-                    <?php
-                    if(count($modes) > 1) {
-                    ?>
+                                	<?php
+                                        if(count($modes) > 1) {
+                     			?>
 					<div class='btn btn-sm btn-default pull-left' id='suspend_sale_button'><span class="glyphicon glyphicon-align-justify">&nbsp</span><?php echo $this->lang->line('sales_suspend_sale'); ?></div>
-                    <?php
-                    }
-                    ?>
+			                <?php
+			                }
+			                ?>
 					<?php
 					// Only show this part if the payment covers the total
 					if(!$pos_mode && isset($customer))

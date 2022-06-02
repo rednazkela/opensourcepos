@@ -12,7 +12,7 @@
 		<div class="form-group form-group-sm">
 			<?php echo form_label($this->lang->line('sales_date'), 'date', array('class'=>'control-label col-xs-3')); ?>
 			<div class='col-xs-8'>
-				<?php echo form_input(array('name'=>'date','value'=>to_datetime(strtotime($sale_info['sale_time'])), 'class'=>'datetime form-control input-sm'));?>
+				<?php echo form_input(array('name'=>'date','value'=>to_datetime(strtotime($sale_info['sale_time'])), 'class'=>'form-control input-sm', 'readonly'=>'true'));?>
 			</div>
 		</div>
 
@@ -73,7 +73,8 @@
 					<?php if( !empty(strstr($row->payment_type, $this->lang->line('sales_giftcard'))) ): ?>
 						<?php echo form_input(array('name'=>'payment_type_'.$i, 'value'=>$row->payment_type, 'id'=>'payment_type_'.$i, 'class'=>'form-control input-sm', 'readonly'=>'true'));?>
 					<?php else: ?>
-						<?php echo form_dropdown('payment_type_'.$i, $payment_options, $row->payment_type, array('id'=>'payment_types_'.$i, 'class'=>'form-control')); ?>
+                        <?php echo form_input(array('name'=>'payment_type_'.$i, 'value'=>$row->payment_type, 'id'=>'payment_type_'.$i, 'class'=>'form-control input-sm', 'readonly'=>'true'));?>
+                        <?php // echo form_dropdown('payment_type_'.$i, $payment_options, $row->payment_type, array('id'=>'payment_types_'.$i, 'class'=>'form-control')); ?>
 					<?php endif; ?>
 				</div>
 				<div class='col-xs-4'>
@@ -88,15 +89,16 @@
 					</div>
 				</div>
 			</div>
-
-			<div class="form-group form-group-sm">
+        <?php if(false) { ?>
+            <div class="form-group form-group-sm">
 				<?php echo form_label($this->lang->line('sales_refund'), 'refund_'.$i, array('class'=>'control-label col-xs-3')); ?>
 				<div class='col-xs-4'>
 					<?php // no editing of Gift Card payments as it's a complex change ?>
 					<?php if( !empty(strstr($row->payment_type, $this->lang->line('sales_giftcard'))) ): ?>
 						<?php echo form_input(array('name'=>'refund_type_'.$i, 'value'=>$this->lang->line('sales_cash'), 'id'=>'refund_type_'.$i, 'class'=>'form-control input-sm', 'readonly'=>'true'));?>
 					<?php else: ?>
-						<?php echo form_dropdown('refund_type_'.$i, $payment_options, $this->lang->line('sales_cash'), array('id'=>'refund_types_'.$i, 'class'=>'form-control')); ?>
+                        <?php echo form_input(array('name'=>'refund_type_'.$i, 'value'=>$this->lang->line('sales_cash'), 'id'=>'refund_type_'.$i, 'class'=>'form-control input-sm', 'readonly'=>'true'));?>
+                        <?php //echo form_dropdown('refund_type_'.$i, $payment_options, $this->lang->line('sales_cash'), array('id'=>'refund_types_'.$i, 'class'=>'form-control')); ?>
 					<?php endif; ?>
 				</div>
 				<div class='col-xs-4'>
@@ -111,7 +113,8 @@
 					</div>
 				</div>
 			</div>
-		<?php 
+            <?php } ?>
+            <?php
 			++$i;
 		}
 		echo form_hidden('number_of_payments', $i);			
@@ -120,7 +123,7 @@
 		<div class="form-group form-group-sm">
 			<?php echo form_label($this->lang->line('sales_customer'), 'customer', array('class'=>'control-label col-xs-3')); ?>
 			<div class='col-xs-8'>
-				<?php echo form_input(array('name'=>'customer_name', 'value'=>$selected_customer_name, 'id'=>'customer_name', 'class'=>'form-control input-sm'));?>
+				<?php echo form_input(array('name'=>'customer_name', 'value'=>$selected_customer_name, 'id'=>'customer_name', 'class'=>'form-control input-sm', 'readonly'=>'true'));?>
 				<?php echo form_hidden('customer_id', $selected_customer_id);?>
 			</div>
 		</div>
@@ -128,7 +131,7 @@
 		<div class="form-group form-group-sm">
 			<?php echo form_label($this->lang->line('sales_employee'), 'employee', array('class'=>'control-label col-xs-3')); ?>
 			<div class='col-xs-8'>
-				<?php echo form_input(array('name'=>'employee_name', 'value'=>$selected_employee_name, 'id'=>'employee_name', 'class'=>'form-control input-sm'));?>
+				<?php echo form_input(array('name'=>'employee_name', 'value'=>$selected_employee_name, 'id'=>'employee_name', 'class'=>'form-control input-sm', 'readonly'=>'true'));?>
 				<?php echo form_hidden('employee_id', $selected_employee_id);?>
 			</div>
 		</div>

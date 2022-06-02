@@ -52,9 +52,9 @@ function _load_language_files($CI, $path, $language, $fallback)
 {
     $map = directory_map($path . DIRECTORY_SEPARATOR . $language);
 
+    log_message('error', $path . DIRECTORY_SEPARATOR . $language);
     foreach($map as $file)
-	{
-
+    {
         if(!is_array($file) && substr(strrchr($file, '.'), 1) == 'php')
 		{
             $filename = strtr($file, '', '_lang.php');

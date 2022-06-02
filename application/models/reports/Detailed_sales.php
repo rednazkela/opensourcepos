@@ -23,8 +23,8 @@ class Detailed_sales extends Report
 				array('subtotal' => $this->lang->line('reports_subtotal'), 'sorter' => 'number_sorter'),
 				array('tax' => $this->lang->line('reports_tax'), 'sorter' => 'number_sorter'),
 				array('total' => $this->lang->line('reports_total'), 'sorter' => 'number_sorter'),
-				array('cost' => $this->lang->line('reports_cost'), 'sorter' => 'number_sorter'),
-				array('profit' => $this->lang->line('reports_profit'), 'sorter' => 'number_sorter'),
+				//array('cost' => $this->lang->line('reports_cost'), 'sorter' => 'number_sorter'),
+				//array('profit' => $this->lang->line('reports_profit'), 'sorter' => 'number_sorter'),
 				array('payment_type' => $this->lang->line('reports_payment_type'), 'sortable' => FALSE),
 				array('comment' => $this->lang->line('reports_comments'))),
 			'details' => array(
@@ -36,8 +36,8 @@ class Detailed_sales extends Report
 				$this->lang->line('reports_subtotal'),
 				$this->lang->line('reports_tax'),
 				$this->lang->line('reports_total'),
-				$this->lang->line('reports_cost'),
-				$this->lang->line('reports_profit'),
+				//$this->lang->line('reports_cost'),
+				//$this->lang->line('reports_profit'),
 				$this->lang->line('reports_discount')),
 			'details_rewards' => array(
 				$this->lang->line('reports_used'),
@@ -71,6 +71,7 @@ class Detailed_sales extends Report
 		$this->db->select('sale_id, 
 			MAX(CASE
 			WHEN sale_type = ' . SALE_TYPE_POS . ' && sale_status = ' . COMPLETED . ' THEN \'' . $this->lang->line('reports_code_pos') . '\'			
+			WHEN sale_type = ' . SALE_TYPE_POS . ' && sale_status = ' . DUED . ' THEN \'' . $this->lang->line('reports_code_pos') . '\'			
 			WHEN sale_type = ' . SALE_TYPE_INVOICE . ' && sale_status = ' . COMPLETED . ' THEN \'' . $this->lang->line('reports_code_invoice') . '\'
 			WHEN sale_type = ' . SALE_TYPE_WORK_ORDER . ' && sale_status = ' . SUSPENDED . ' THEN \'' . $this->lang->line('reports_code_work_order') . '\'
 			WHEN sale_type = ' . SALE_TYPE_QUOTE . ' && sale_status = ' . SUSPENDED . ' THEN \'' . $this->lang->line('reports_code_quote') . '\'
@@ -86,10 +87,10 @@ class Detailed_sales extends Report
 			SUM(subtotal) AS subtotal,
 			SUM(tax) AS tax,
 			SUM(total) AS total,
-			SUM(CASE WHEN (total - sale_payment_amount) > 0 THEN (total - sale_payment_amount) ELSE 0 END) AS due,
-			SUM(cost) AS cost,
-			SUM(profit) AS profit,
-			MAX(payment_type) AS payment_type,
+			SUM(CASE WHEN (total - sale_payment_amount) > 0 THEN (total - sale_payment_amount) ELSE 0 END) AS due,' .
+			//SUM(cost) AS cost,
+			//SUM(profit) AS profit,
+			'MAX(payment_type) AS payment_type,
 			MAX(comment) AS comment');
 		$this->db->from('sales_items_temp');
 
@@ -117,7 +118,7 @@ class Detailed_sales extends Report
 		}
 		elseif($inputs['sale_type'] == 'due')
 		{
-			$this->db->where('sale_status', COMPLETED);
+			$this->db->where('sale_status', DUED);
 			$this->db->group_start();
 			$this->db->where('sale_type', SALE_TYPE_POS);
 			$this->db->or_where('sale_type', SALE_TYPE_INVOICE);
@@ -166,10 +167,10 @@ class Detailed_sales extends Report
 				MAX(description) AS description, 
 				MAX(subtotal) AS subtotal, 
 				MAX(tax) AS tax, 
-				MAX(total) AS total, 
-				MAX(cost) AS cost, 
-				MAX(profit) AS profit, 
-				MAX(discount) AS discount, 
+				MAX(total) AS total,' .
+				//MAX(cost) AS cost,
+				//MAX(profit) AS profit,
+				'MAX(discount) AS discount, 
 				MAX(discount_type) AS discount_type, 
 				MAX(sale_status) AS sale_status');
 			$this->db->from('sales_items_temp');

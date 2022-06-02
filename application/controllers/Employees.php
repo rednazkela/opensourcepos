@@ -147,7 +147,8 @@ class Employees extends Persons
 			$employee_data = array(
 				'username' 	=> $this->input->post('username'),
 				'language_code'	=> $exploded[0],
-				'language' 	=> $exploded[1]
+				'language' 	=> $exploded[1],
+				'location' 	=> $this->input->post('location')
 			);
 		}
 

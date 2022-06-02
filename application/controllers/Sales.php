@@ -612,7 +612,7 @@ class Sales extends Secure_Controller
 
 			if(array_key_exists($this->lang->line('sales_cash'), $data['payments']))
 			{
-				$data['payments'][$this->lang->line('sales_cash')]['cash_refund'] = $data['amount_change'];
+				$data['payments'][date('Y-m-d') . " " . $this->lang->line('sales_cash')]['cash_refund'] = $data['amount_change'];
 			}
 			else
 			{
@@ -880,7 +880,8 @@ class Sales extends Secure_Controller
 			$data['customer_address'] = $customer_info->address_1;
 			if(!empty($customer_info->zip) || !empty($customer_info->city))
 			{
-				$data['customer_location'] = $customer_info->zip . ' ' . $customer_info->city . "\n" . $customer_info->state;
+				//$data['customer_location'] = $customer_info->zip . ' ' . $customer_info->city . "\n" . $customer_info->state;
+				$data['customer_location'] = $customer_info->address_2 . ', ' . $customer_info->city;
 			}
 			else
 			{
@@ -1153,7 +1154,6 @@ class Sales extends Secure_Controller
 			$data['mode_label'] = $this->lang->line('sales_receipt');
 			$data['customer_required'] = $this->lang->line('sales_customer_optional');
 		}
-		
 		if(count($data['modes']) == 1) {
 			$this->sale_lib->set_mode('sale_quote');
 			$this->sale_lib->set_sale_type(SALE_TYPE_QUOTE);
@@ -1414,6 +1414,16 @@ class Sales extends Secure_Controller
 			$this->sale_lib->remove_temp_items();
 		}
 
+		$this->sale_lib->clear_all();
+		$this->_reload();
+	}
+	/**
+	 * This is used to clear a suspended pos sale, quote.
+	 */
+	public function clear_register()
+	{
+		$this->session->set_userdata('sale_id', -1);
+		$this->sale_lib->remove_temp_items();
 		$this->sale_lib->clear_all();
 		$this->_reload();
 	}

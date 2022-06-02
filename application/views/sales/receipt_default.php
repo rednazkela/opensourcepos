@@ -220,8 +220,10 @@
                         $show_giftcard_remainder |= $splitpayment[0] == $this->lang->line('sales_giftcard');
                         if($payment['payment_amount'] > 0) {
                         ?>
-                            &#8811; <?php echo substr($splitpayment[0], 0, 19) . " " . to_currency( ($sale_due > 0 ? $payment['payment_amount'] : $total) * -1); ?><br>
+                            &#8811; <?php echo substr($splitpayment[0], 0, 19) . " " . to_currency($payment['payment_amount'] * -1); ?><br>
                         <?php
+                        } else {
+                            $total_payments--;
                         }
                     }
                     ?>

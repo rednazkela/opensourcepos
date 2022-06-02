@@ -24,12 +24,23 @@ if(isset($success))
 	<?php echo form_open($controller_name."/change_mode", array('id'=>'mode_form', 'class'=>'form-horizontal panel panel-default')); ?>
 		<div class="panel-body form-group">
 			<ul>
+                <?php if(false) {?>
 				<li class="pull-left first_li">
 					<label class="control-label"><?php echo $this->lang->line('sales_mode'); ?></label>
 				</li>
+                <?php }?>
 				<li class="pull-left">
 					<?php echo form_dropdown('mode', $modes, $mode, array('onchange'=>"$('#mode_form').submit();", 'class'=>'selectpicker show-menu-arrow', 'data-style'=>'btn-default btn-sm', 'data-width'=>'fit')); ?>
 				</li>
+                <li class="pull-left">
+                    <div title="<?php echo $this->lang->line('sales_clear_register'); ?>" class='btn btn-sm btn-info pull-left' id='clear_register_button'><i class="glyphicon glyphicon-refresh"></i></div>
+                </li>
+                <li class="pull-left">
+                    <button class='btn btn-success btn-sm modal-dlg' id='show_suspended_sales_button' data-href="<?php echo site_url($controller_name."/suspended"); ?>"
+                            title="<?php echo $this->lang->line('sales_suspended_sales'); ?>">
+                        <span class="glyphicon glyphicon-align-justify">&nbsp</span><?php echo $this->lang->line('sales_suspended_sales'); ?>
+                    </button>
+                </li>
 				<?php
 				if($this->config->item('dinner_table_enable') == TRUE)
 				{
@@ -54,12 +65,22 @@ if(isset($success))
 				<?php
 				}
 				?>
-
+                <?php
+                if($this->Employee->has_grant('reports_sales', $this->session->userdata('person_id')) && count($modes) > 1)
+                {
+                    ?>
+                    <li class="pull-right">
+                        <?php echo anchor($controller_name."/manage", '<span class="glyphicon glyphicon-list-alt">&nbsp</span>' . $this->lang->line('sales_takings'),
+                            array('class'=>'btn btn-primary btn-sm', 'id'=>'sales_takings_button', 'title'=>$this->lang->line('sales_takings'))); ?>
+                    </li>
+                    <?php
+                }
+                ?>
                 <?php
                 if(count($modes) > 1)
                 {
                 ?>
-				<li class="pull-right">
+				<li class="pull-left">
 					<button class='btn btn-default btn-sm modal-dlg' id='show_due_sales_button' data-href="<?php echo site_url($controller_name."/dued"); ?>"
 							title="<?php echo $this->lang->line('sales_due_sales'); ?>">
 						<span class="glyphicon glyphicon-align-justify">&nbsp</span><?php echo $this->lang->line('sales_due_sales'); ?>
@@ -68,26 +89,6 @@ if(isset($success))
                 <?php
                 }
                 ?>
-
-				<li class="pull-right">
-					<button class='btn btn-default btn-sm modal-dlg' id='show_suspended_sales_button' data-href="<?php echo site_url($controller_name."/suspended"); ?>"
-							title="<?php echo $this->lang->line('sales_suspended_sales'); ?>">
-						<span class="glyphicon glyphicon-align-justify">&nbsp</span><?php echo $this->lang->line('sales_suspended_sales'); ?>
-					</button>
-				</li>
-
-				<?php
-				if($this->Employee->has_grant('reports_sales', $this->session->userdata('person_id')) && count($modes) > 1)
-				{
-				?>
-					<li class="pull-right">
-						<?php echo anchor($controller_name."/manage", '<span class="glyphicon glyphicon-list-alt">&nbsp</span>' . $this->lang->line('sales_takings'),
-									array('class'=>'btn btn-primary btn-sm', 'id'=>'sales_takings_button', 'title'=>$this->lang->line('sales_takings'))); ?>
-					</li>
-				<?php
-				}
-				?>
-
 			</ul>
 		</div>
 	<?php echo form_close(); ?>
@@ -113,10 +114,11 @@ if(isset($success))
                                     $due_payment = TRUE;
                                 }
 				try{
-                                if(new DateTime($payment['payment_time']) < new DateTime())
-                                {
-                                    $previous_payments = TRUE;
-                                }
+                                try {
+                                    if (new DateTime($payment['payment_time']) < new DateTime()) {
+                                        $previous_payments = TRUE;
+                                    }
+                                } catch (Exception $e) {}
 				}catch(Exception $e){}
                             }
                         }
@@ -354,16 +356,16 @@ if(isset($success))
 			?>
 				<table class="sales_table_100">
 					<tr>
-						<th style="width: 55%;"><?php echo $this->lang->line("sales_customer"); ?></th>
-						<th style="width: 45%; text-align: right;"><?php echo anchor('customers/view/'.$customer_id, $customer, array('class' => 'modal-dlg', 'data-btn-submit' => $this->lang->line('common_submit'), 'title' => $this->lang->line('customers_update'))); ?></th>
+						<th style="width: 35%;"><?php echo $this->lang->line("sales_customer"); ?></th>
+						<th style="width: 65%; text-align: right;"><?php echo anchor('customers/view/'.$customer_id, $customer, array('style' => 'color: black', 'class' => 'modal-dlg', 'data-btn-submit' => $this->lang->line('common_submit'), 'title' => $this->lang->line('customers_update'))); ?>&nbsp<i class="glyphicon glyphicon-edit"></i></th>
 					</tr>
 					<?php
 					if(!empty($customer_email))
 					{
 					?>
 						<tr>
-							<th style="width: 55%;"><?php echo $this->lang->line("sales_customer_email"); ?></th>
-							<th style="width: 45%; text-align: right;"><?php echo $customer_email; ?></th>
+							<th style="width: 35%;"><?php echo $this->lang->line("sales_customer_email"); ?></th>
+							<th style="width: 65%; text-align: right;"><?php echo $customer_email; ?></th>
 						</tr>
 					<?php
 					}
@@ -373,8 +375,8 @@ if(isset($success))
 					{
 					?>
 						<tr>
-							<th style="width: 55%;"><?php echo $this->lang->line("sales_customer_address"); ?></th>
-							<th style="width: 45%; text-align: right;"><?php echo $customer_address; ?></th>
+							<th style="width: 35%;"><?php echo $this->lang->line("sales_customer_address"); ?></th>
+							<th style="width: 65%; text-align: right;"><?php echo $customer_address; ?></th>
 						</tr>
 					<?php
 					}
@@ -384,44 +386,47 @@ if(isset($success))
 					{
 					?>
 						<tr>
-							<th style="width: 55%;"><?php echo $this->lang->line("sales_customer_location"); ?></th>
-							<th style="width: 45%; text-align: right;"><?php echo $customer_location; ?></th>
+							<th style="width: 35%;"><?php echo $this->lang->line("sales_customer_location"); ?></th>
+							<th style="width: 65%; text-align: right;"><?php echo $customer_location; ?></th>
 						</tr>
 					<?php
 					}
+                    if(false) {
 					?>
 					<tr>
-						<th style="width: 55%;"><?php echo $this->lang->line("sales_customer_discount"); ?></th>
-						<th style="width: 45%; text-align: right;"><?php echo ($customer_discount_type == FIXED)?to_currency($customer_discount):$customer_discount . '%'; ?></th>
+						<th style="width: 35%;"><?php echo $this->lang->line("sales_customer_discount"); ?></th>
+						<th style="width: 65%; text-align: right;"><?php echo ($customer_discount_type == FIXED)?to_currency($customer_discount):$customer_discount . '%'; ?></th>
 					</tr>
-					<?php if($this->config->item('customer_reward_enable') == TRUE): ?>
+					<?php
+                    }
+                    if($this->config->item('customer_reward_enable') == TRUE): ?>
 					<?php
 					if(!empty($customer_rewards))
 					{
 					?>
 						<tr>
-							<th style="width: 55%;"><?php echo $this->lang->line("rewards_package"); ?></th>
-							<th style="width: 45%; text-align: right;"><?php echo $customer_rewards['package_name']; ?></th>
+							<th style="width: 35%;"><?php echo $this->lang->line("rewards_package"); ?></th>
+							<th style="width: 65%; text-align: right;"><?php echo $customer_rewards['package_name']; ?></th>
 						</tr>
 						<tr>
-							<th style="width: 55%;"><?php echo $this->lang->line("customers_available_points"); ?></th>
-							<th style="width: 45%; text-align: right;"><?php echo $customer_rewards['points']; ?></th>
+							<th style="width: 35%;"><?php echo $this->lang->line("customers_available_points"); ?></th>
+							<th style="width: 65%; text-align: right;"><?php echo $customer_rewards['points']; ?></th>
 						</tr>
 					<?php
 					}
 					?>
 					<?php endif; ?>
 					<tr>
-						<th style="width: 55%;"><?php echo $this->lang->line("sales_customer_total"); ?></th>
-						<th style="width: 45%; text-align: right;"><?php echo to_currency($customer_total); ?></th>
+						<th style="width: 35%;"><?php echo $this->lang->line("sales_customer_total"); ?></th>
+						<th style="width: 65%; text-align: right;"><?php echo to_currency($customer_total); ?></th>
 					</tr>
 					<?php
 					if(!empty($mailchimp_info))
 					{
 					?>
 						<tr>
-							<th style="width: 55%;"><?php echo $this->lang->line("sales_customer_mailchimp_status"); ?></th>
-							<th style="width: 45%; text-align: right;"><?php echo $mailchimp_info['status']; ?></th>
+							<th style="width: 35%;"><?php echo $this->lang->line("sales_customer_mailchimp_status"); ?></th>
+							<th style="width: 65%; text-align: right;"><?php echo $mailchimp_info['status']; ?></th>
 						</tr>
 					<?php
 					}
@@ -901,6 +906,14 @@ $(document).ready(function()
 		}
 	});
 
+    $('#clear_register_button').click(function() {
+		if(confirm("<?php echo $this->lang->line('sales_clear_register_confirm'); ?>"))
+		{
+			$('#buttons_form').attr('action', "<?php echo site_url($controller_name.'/clear_register'); ?>");
+			$('#buttons_form').submit();
+		}
+	});
+
 	$('#add_payment_button').click(function() {
 		$('#add_payment_form').submit();
 	});
@@ -1043,7 +1056,7 @@ document.body.onkeyup = function(e)
 	switch(event.keyCode) 
 	{
 		case 27: // ESC Cancel Current Sale
-			$("#cancel_sale_button").click();
+			$("#clear_register_button").click();
 			break;		  
     }
 }

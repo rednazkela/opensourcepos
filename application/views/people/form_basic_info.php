@@ -101,6 +101,19 @@
 	</div>
 </div>
 
+<div class="form-group form-group-sm">
+        <?php echo form_label($this->lang->line('common_zip'), 'zip', array('class'=>'control-label col-xs-3')); ?>
+        <div class='col-xs-8'>
+                <?php echo form_input(array(
+                                'name'=>'zip',
+                                'id'=>'postcode',
+                                'class'=>'form-control input-sm',
+                                'value'=>$person_info->zip)
+                                );?>
+        </div>
+</div>
+
+
 <div class="form-group form-group-sm">	
 	<?php echo form_label($this->lang->line('common_city'), 'city', array('class'=>'control-label col-xs-3')); ?>
 	<div class='col-xs-8'>
@@ -108,7 +121,7 @@
 				'name'=>'city',
 				'id'=>'city',
 				'class'=>'form-control input-sm',
-				'value'=>$person_info->city)
+				'value'=>'DURANGO')
 				);?>
 	</div>
 </div>
@@ -120,19 +133,7 @@
 				'name'=>'state',
 				'id'=>'state',
 				'class'=>'form-control input-sm',
-				'value'=>$person_info->state)
-				);?>
-	</div>
-</div>
-
-<div class="form-group form-group-sm">	
-	<?php echo form_label($this->lang->line('common_zip'), 'zip', array('class'=>'control-label col-xs-3')); ?>
-	<div class='col-xs-8'>
-		<?php echo form_input(array(
-				'name'=>'zip',
-				'id'=>'postcode',
-				'class'=>'form-control input-sm',
-				'value'=>$person_info->zip)
+				'value'=>'DURANGO')
 				);?>
 	</div>
 </div>
@@ -144,7 +145,7 @@
 				'name'=>'country',
 				'id'=>'country',
 				'class'=>'form-control input-sm',
-				'value'=>$person_info->country)
+				'value'=>'MEXICO')
 				);?>
 	</div>
 </div>

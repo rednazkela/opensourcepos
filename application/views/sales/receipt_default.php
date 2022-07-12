@@ -264,10 +264,11 @@
                 <?php
                     if($sale_due === 0) {
                         echo 'Liquidación: ';
+                        echo to_currency($total);
                     } else {
                         echo 'Abono: ';
+                        echo to_currency($payment['payment_amount']);
                     }
-                    echo to_currency(($sale_due > 0 ? $payment['payment_amount'] : $total));
                 ?>
             </td>
         </tr>

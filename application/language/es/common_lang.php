@@ -1,13 +1,13 @@
 <?php 
 
-$lang["common_address_1"] = "Dirección 1";
-$lang["common_address_2"] = "Dirección 2";
+$lang["common_address_1"] = "Calle y Número";
+$lang["common_address_2"] = "Colonia/Localidad";
 $lang["common_admin"] = "Administrador";
-$lang["common_city"] = "Ciudad";
+$lang["common_city"] = "Municipio";
 $lang["common_clerk"] = "Empleado";
 $lang["common_close"] = "Cerrar";
 $lang["common_color"] = "Colores del tema";
-$lang["common_comments"] = "Comentarios";
+$lang["common_comments"] = "Otros medios de Contacto";
 $lang["common_common"] = "Común";
 $lang["common_confirm_search"] = "Has seleccionado una o más filas. Éstas no estarán seleccionadas después de tu búsqueda. ¿Seguro(a) que quieres hacer esta búsqueda?";
 $lang["common_copyrights"] = "© 2010 - %1";
